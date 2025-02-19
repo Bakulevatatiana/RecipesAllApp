@@ -7,16 +7,16 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface RecipesServices {
+    void saveToFile();
+
     Recipe add(Recipe recipe);
     Recipe get(long id);
     Recipe update(long id, Recipe recipe);
-    Recipe remove( long id);
-
     List<Recipe> getAll();
-
-    byte [] getAllInBytes();
+  Recipe remove( long id);
+  /*  byte [] getAllInBytes();
 
     void importRecipes(MultipartFile recipes);
 
-    byte[] exportTxt();
+    byte[] exportTxt();*/
 }

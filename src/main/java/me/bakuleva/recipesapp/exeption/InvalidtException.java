@@ -1,4 +1,4 @@
-package me.bakuleva.recipesapp.controllers.exeption;
+package me.bakuleva.recipesapp.exeption;
 
 public class InvalidtException extends RuntimeException{
     public InvalidtException(String message) {

@@ -6,15 +6,17 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface IngredientsServices {
+    void saveToFile();
+
     Ingredient add(Ingredient ingredient);
     Ingredient get(long id);
     Ingredient update(long id,Ingredient ingredient);
-    Ingredient remove( long id);
 
     List<Ingredient> getAll();
 
-    byte[] getAllInBytes();
+    Ingredient remove(long id);
+   /* byte[] getAllInBytes();
 
 
-    void importIngredients(MultipartFile ingredients);
+    void importIngredients(MultipartFile ingredients);*/
 }

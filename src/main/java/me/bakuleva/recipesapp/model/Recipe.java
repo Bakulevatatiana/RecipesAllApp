@@ -1,8 +1,13 @@
 package me.bakuleva.recipesapp.model;
 
-import lombok.Data;
+import lombok.*;
 
 import java.util.List;
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+
 @Data
 public class Recipe {
 
@@ -11,8 +16,14 @@ public class Recipe {
     private List<Ingredient> ingredients;
     private List<String> steps;
 
-    public Recipe() {
-
+    @Override
+    public String toString() {
+        return "Recipe{" +
+                "name='" + name + '\'' +
+                ", cookingTime=" + cookingTime +
+                ", ingredients=" + ingredients +
+                ", steps=" + steps +
+                '}';
     }
 }
 

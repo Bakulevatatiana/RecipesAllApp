@@ -56,7 +56,7 @@ public class RecipesController {
         return recipesServices.remove(id);
     }
 
-    @GetMapping("/download")
+   /* @GetMapping("/download")
     public ResponseEntity<byte[]> downloadRecipes(){
         byte[] bytes=recipesServices.getAllInBytes();
         if (bytes==null){
@@ -74,7 +74,7 @@ public class RecipesController {
        recipesServices.importRecipes(recipes);
 
     }
-    @GetMapping( "/export")
+  /*  @GetMapping( "/export")
 public ResponseEntity<byte[]> exportTxt(){
     byte[] bytes=recipesServices.exportTxt();
         if (bytes==null){
@@ -86,7 +86,7 @@ public ResponseEntity<byte[]> exportTxt(){
                .header(HttpHeaders.CONTENT_DISPOSITION,"attachment;filename=\"info.txt\"")
                .body(bytes);
 
-}
+}*/
 }
 
 

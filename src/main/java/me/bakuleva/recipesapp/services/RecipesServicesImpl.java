@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
-import me.bakuleva.recipesapp.controllers.exeption.InvalidtException;
+import me.bakuleva.recipesapp.exeption.InvalidtException;
 import me.bakuleva.recipesapp.model.Ingredient;
 import me.bakuleva.recipesapp.model.Recipe;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,7 +19,6 @@ import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.rmi.server.UID;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,64 +26,49 @@ import java.util.Map;
 
 @Data
 @Service
-public class RecipesServiceslmpl implements RecipesServices {
-    private final Map<Long, Recipe> recipeMap = new HashMap<>();
-    private long counter;
-    private final Path path;
+public class RecipesServicesImpl implements RecipesServices {
+    private Map<Long, Recipe> recipeMap = new HashMap<>();
+    private static long counter;
+    private  FilesService filesService;
 
-    private final Path pathToTxtTemplate;
-    private final ObjectMapper objectMapper;
+private Recipe recipe;
+    public RecipesServicesImpl(FilesService filesService) {
 
-    public RecipesServiceslmpl(@Value("${application.file.recipes") String path) {
-        try {
-            this.path = Paths.get(path);
-            this.pathToTxtTemplate = Paths.get(RecipesServiceslmpl.class.getResource("recipesTemplate.txt").toURI());
-            this.objectMapper = new ObjectMapper();
-        } catch (
-                InvalidPathException e) {
-            e.printStackTrace();
-            throw e;
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
+        this.filesService = filesService;
     }
 
     @PostConstruct
     public void init() {
-        readDataFromFile();
 
 
+
+    }
+    @Override
+    public void saveToFile(){
+        try {
+            String json=new ObjectMapper().writeValueAsString(recipeMap);
+            filesService.saveRecipes(json);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void readDataFromFile() {
+        String json= filesService.readRecipes();
         try {
-            byte[] file = Files.readAllBytes(path);
-            Map<Long, Recipe> mapFromFile = objectMapper.readValue(file, new TypeReference<Map<Long, Recipe>>() {
+            recipeMap = new ObjectMapper().readValue(json, new TypeReference<Map<Long, Recipe>>() {
             });
-            recipeMap.putAll(mapFromFile);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (JsonProcessingException e){
+            throw new RuntimeException(e);
         }
     }
 
-    private void writeDataToFile(Map<Long, Recipe> recipeMap) {
-        try {
-            byte[] bytes = objectMapper.writeValueAsBytes(recipeMap);
-            Files.write(path, bytes);
 
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
 
     @Override
     public Recipe add(Recipe recipe) {
-        recipeMap.put(this.counter++, recipe);
-        writeDataToFile(recipeMap);
+        recipeMap.put(counter++, recipe);
+        saveToFile();
         return recipe;
     }
 
@@ -101,25 +85,24 @@ public class RecipesServiceslmpl implements RecipesServices {
     public Recipe update(long id, Recipe recipe) {
         if (recipeMap.containsKey(id)) {
             recipeMap.put(id, recipe);
-            writeDataToFile(recipeMap);
+            saveToFile();
             return recipe;
         }
         return null;
     }
 
-    @Override
-    public Recipe remove(long id) {
-        Recipe recipe = recipeMap.remove(id);
-        writeDataToFile(recipeMap);
-        return recipe;
-    }
+
 
     @Override
     public List<Recipe> getAll() {
         return new ArrayList<>(this.recipeMap.values());
     }
-
-    @Override
+ @Override
+    public Recipe remove(long id) {
+        Recipe recipe = recipeMap.remove(id);
+        return recipe;
+    }
+  /*  @Override
     public byte[] getAllInBytes() {
         try {
             return Files.readAllBytes(path);
@@ -169,6 +152,6 @@ public class RecipesServiceslmpl implements RecipesServices {
             e.printStackTrace();
         }
         return null;
-    }
+    }*/
 }
 

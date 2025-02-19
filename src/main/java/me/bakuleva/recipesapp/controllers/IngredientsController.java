@@ -2,7 +2,7 @@ package me.bakuleva.recipesapp.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import me.bakuleva.recipesapp.controllers.exeption.InvalidtException;
+import me.bakuleva.recipesapp.exeption.InvalidtException;
 import me.bakuleva.recipesapp.model.Ingredient;
 import me.bakuleva.recipesapp.services.IngredientsServices;
 import org.apache.commons.lang3.StringUtils;
@@ -50,7 +50,7 @@ public class IngredientsController {
 
     }
 
-    @PostMapping("/{id}")
+    @PutMapping("/{id}")
     @Operation(description = "Замена ингредиентов.")
     public Ingredient updateIngredient(@PathVariable("id") long id,@RequestBody Ingredient ingredient){
         return ingredientsServices.update(id, ingredient);}
@@ -60,7 +60,7 @@ public class IngredientsController {
     public Ingredient deleteIngredient(@PathVariable("id") long id){
         return ingredientsServices.remove(id);
     }
-    @GetMapping("/download")
+    /*@GetMapping("/download")
     public ResponseEntity<byte[]> downloadRecipes(){
         byte[] bytes=ingredientsServices.getAllInBytes();
         if (bytes==null){
@@ -77,7 +77,7 @@ public class IngredientsController {
     public void importIngredients(MultipartFile ingredients){
         ingredientsServices.importIngredients(ingredients);
 
-    }
+    }*/
 
 
 }
